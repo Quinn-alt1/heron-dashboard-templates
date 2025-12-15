@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cash Flow Dashboard - TechVista Solutions (Valuation Scale)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+/* --- Global & Typography --- */
+body {
+ font-family: 'Nunito', sans-serif;
+ background: #fafafa;
+ margin: 0;
+ padding: 20px;
+ color: #333;
+}
+h1, h2, h3 {
+ font-weight: 600;
+ color: #1f2937;
+ margin-top: 0;
+}
+h1 {
+ font-size: 1.5rem;
+}
+.header {
+ margin-bottom: 30px;
+}
+
+
+/* --- Toolbar Styles (Harmonized) --- */
+.widget-header {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 30px;
+}
+.widget-title {
+ font-size: 1rem;
+ font-weight: 700;
+ color: #1f2937;
+}
+.toolbar button {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #111827;
+  background: transparent;
+  border: none;
+  margin-right: 8px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  vertical-align: middle;
+}
+.toolbar button:last-child { margin-right: 0; }
+.toolbar button:hover {
+  background-color: #f3f4f6;
+  box-shadow: none;
+}
+
+
+.toolbar i {
+  font-size: 14px; /* Slightly smaller icon size */
+  margin-right: 8px; /* Increased margin between icon and text */
+  vertical-align: middle; /* Better vertical alignment */
+  color: #374151; /* Dark icon color */
+}
+
+
+/* --- Executive Summary --- */
+.executive-summary {
+ background: #fff;
+ border-radius: 12px;
+ /* UPDATED SHADOW */
+ box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+ padding: 25px 20px 15px 20px;
+ margin-bottom: 30px;
+}
+.executive-summary h2 {
+ font-weight: 700;
+ font-size: 1.2rem;
+}
+.findings-grid {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 30px;
+ margin-top: 20px;
+ margin-bottom: 10px;
+}
+.findings-section h3 {
+ margin-bottom: 10px;
+ font-size: 1.05rem;
+}
+.finding-item strong {
+ font-weight: 700;
+ color: #1f2937;
+}
+.finding-item p {
+ font-size: 1rem;
+ color: #374151;
+ margin: 5px 0 0 0;
+}
+.last-updated {
+ font-size: 0.9rem;
+ color: #6b7280;
+ margin-top: 12px;
+}
+
+
+/* --- Cards --- */
+.grid {
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ gap: 20px;
+ margin-bottom: 30px;
+}
+.card {
+ background: #fff;
+ padding: 18px 17px 18px 17px;
+ border-radius: 12px;
+ /* UPDATED SHADOW */
+ box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+ transition: transform 0.2s ease, box-shadow 0.2s ease;
+ display: flex;
+ flex-direction: column;
+ align-items: flex-start;
+}
+
+
+/* NEW FLEX/GRID STYLE FOR CARD HEADER TO ALIGN TITLE AND DOTS */
+.card-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ width: 100%; /* Important for justify-content: space-between */
+}
+
+
+.card:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 6px 20px rgba(0,0,0,0.13); /* Kept hover shadow subtle */
+}
+.card h2 {
+ font-size: 1rem;
+ color: #1f2937;
+ font-weight: 400;
+ margin-bottom: 4px;
+ margin-top: 0; /* Removed default h2 top margin */
+}
+.card p {
+ font-size: 1.3rem;
+ font-weight: 700;
+ color: #111827;
+ margin-top: 0;
+ margin-bottom: 10px;
+}
+.subtitle {
+ font-size: 0.8rem;
+ color: #374151;
+ margin-top: 5px;
+}
+
+
+/* --- Charts (Updated for Chart.js) --- */
+.charts {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 30px;
+ margin-top: 30px;
+ margin-bottom: 25px;
+}
+.static-chart-card {
+ background: #fff;
+ border-radius: 12px;
+ /* UPDATED SHADOW */
+ box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+ padding: 20px;
+ display: flex;
+ flex-direction: column;
+ height: 320px;
+}
+.static-chart-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 15px;
+}
+.static-chart-header h3 {
+ font-size: 1rem;
+ font-weight: 600;
+ color: #4b5563;
+ margin: 0;
+}
+.more-options {
+ width: 20px;
+ height: 20px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ cursor: pointer;
+ color: #6b7280;
+ font-size: 1.2rem;
+ line-height: 1;
+}
+.chart-container {
+   flex-grow: 1;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   position: relative;
+   width: 100%;
+}
+.full-width-chart-card {
+   grid-column: span 2; /* Make the cumulative chart span the full width */
+   height: 250px; /* Adjusted height for full-width chart */
+}
+
+
+/* --- Pivot Table --- */
+.pivot-table {
+ margin-top: 40px;
+ background: #fff;
+ border-radius: 12px;
+ /* UPDATED SHADOW */
+ box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+ overflow: hidden;
+}
+.pivot-table h2 {
+ padding: 15px 20px;
+ background: #f3f4f6;
+ margin: 0;
+ border-bottom: 1px solid #e5e7eb;
+ font-size: 1.07rem;
+ font-weight: 700;
+ color: #1f2937;
+}
+table {
+ width: 100%;
+ border-collapse: collapse;
+ font-size: 0.94rem;
+}
+th, td {
+ padding: 12px 15px;
+ text-align: left;
+ border-bottom: 1px solid #e5e7eb;
+}
+th {
+ background: #f3f4f6;
+ font-weight: 600;
+ color: #374151;
+}
+tr:hover {
+ background-color: #f9fafb;
+}
+.expandable {
+ cursor: pointer;
+ font-weight: 700;
+ position: relative;
+ padding-left: 25px;
+}
+.expandable::before {
+ content: '▶';
+ position: absolute;
+ left: 5px;
+ transition: transform 0.2s;
+ color: #111827;
+ font-size: 0.7rem;
+}
+.expandable.expanded::before {
+ transform: rotate(90deg);
+}
+/* Ensure key table rows are bold */
+.pivot-table tr:nth-child(1),
+.pivot-table tr[data-parent="investing"],
+.pivot-table tr[data-parent="financing"],
+.pivot-table tr:last-child,
+.pivot-table tr:nth-last-child(2) {
+   font-weight: 700;
+}
+
+
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Cash Flow</h1>
+</div>
+<div class="content">
+
+
+<div class="widget-header">
+ <div class="widget-title">All Widgets</div>
+<div class="toolbar">
+<button>
+<i class="fas fa-share-alt"></i> Share
+</button>
+<button>
+<i class="fas fa-filter"></i> Filter
+</button>
+<button>
+<i class="fas fa-sync-alt"></i> Sync
+</button>
+<button>
+<i class="fas fa-chart-area"></i> Summarize Dashboard
+</button>
+<button>
+<i class="fas fa-database"></i> Data Sources
+</button>
+<button>
+<i class="fas fa-sliders-h"></i> Settings
+</button>
+<button>
+<i class="fas fa-pen"></i> Edit
+</button>
+<button>
+<i class="fas fa-trash-alt"></i> Delete
+</button>
+</div>
+</div>
+
+
+<div class="executive-summary">
+ <h2>Executive Summary</h2>
+ <p>TechVista Solutions' cash flow analysis reveals a robust financial position with exceptional operational cash generation. The company's November 2025 cash flow demonstrates strong positive operating activities easily covering strategic infrastructure investments and significant debt reduction, leading to substantial liquidity that supports a high growth trajectory and a multi-million dollar valuation.</p>
+ <div class="findings-grid">
+   <div class="findings-section">
+     <h3>Key Findings (November 2025)</h3>
+     <div class="finding-item">
+       <strong>Exceptional Operating Cash Flow:</strong>
+       <p>Net operating cash flow of $750,000 reflects TechVista's consistent ability to generate massive cash from core cloud infrastructure and software operations, far exceeding necessary reinvestment.</p>
+     </div>
+     <div class="finding-item">
+       <strong>Aggressive Capital Investments:</strong>
+       <p>Investing cash outflow of -$275,000 indicates continued, aggressive investment in cutting-edge server infrastructure and technology platforms to capture larger enterprise market share.</p>
+     </div>
+   </div>
+   <div class="findings-section">
+     <h3>Strategic Recommendations</h3>
+     <div class="finding-item">
+       <strong>Capital Deployment:</strong>
+       <p>With an ending cash balance of $3.595 million, accelerate R&D spending or explore M&A opportunities to solidify competitive advantage while maintaining a healthy operational reserve.</p>
+     </div>
+     <div class="finding-item">
+       <strong>Optimize Debt Structure:</strong>
+       <p>Current debt repayment pace of -$175,000 monthly is substantial. Prioritize early principal reduction on high-interest debt or consider a significant equity financing round to eliminate debt entirely and boost valuation multiple.</p>
+     </div>
+   </div>
+ </div>
+ <div class="last-updated">Last updated: November 28, 2025 10:30 AM</div>
+</div>
+
+
+<div class="grid">
+ <div class="card">
+   <div class="card-header">
+     <h2>Cash at End of Month</h2>
+     <div class="more-options">...</div>
+   </div>
+   <p>$3,595,000</p>
+ </div>
+ <div class="card">
+   <div class="card-header">
+     <h2>Net Operating Cashflow </h2>
+     <div class="more-options">...</div>
+   </div>
+   <p>$750,000</p>
+ </div>
+ <div class="card">
+   <div class="card-header">
+     <h2>Net Investing Cashflow </h2>
+     <div class="more-options">...</div>
+   </div>
+   <p>-$275,000</p>
+ </div>
+ <div class="card">
+   <div class="card-header">
+     <h2>Net Financing Cashflow </h2>
+     <div class="more-options">...</div>
+   </div>
+   <p>-$175,000</p>
+ </div>
+</div>
+
+
+
+
+<div class="charts">
+ <div class="static-chart-card">
+   <div class="static-chart-header">
+     <h3>Cash Flow Analysis (November)</h3>
+     <div class="more-options">...</div>
+   </div>
+   <div class="chart-container">
+     <canvas id="monthlySummaryChart"></canvas>
+   </div>
+ </div>
+
+
+ <div class="static-chart-card">
+   <div class="static-chart-header">
+     <h3>Cash Outflows from Operating Activities</h3>
+     <div class="more-options">...</div>
+   </div>
+   <div class="chart-container">
+     <canvas id="operatingTrendChart"></canvas>
+   </div>
+ </div>
+</div>
+
+
+<div class="charts">
+ <div class="static-chart-card">
+   <div class="static-chart-header">
+     <h3>Net Cash Flow from Operating Activities (Trend)</h3>
+     <div class="more-options">...</div>
+   </div>
+   <div class="chart-container">
+     <canvas id="operatingBreakdownChart"></canvas>
+   </div>
+ </div>
+
+
+ <div class="static-chart-card">
+   <div class="static-chart-header">
+     <h3>Cash Outflows from Investing Activities</h3>
+     <div class="more-options">...</div>
+   </div>
+   <div class="chart-container">
+     <canvas id="investingBreakdownChart"></canvas>
+   </div>
+ </div>
+</div>
+
+
+<div class="charts">
+   <div class="static-chart-card">
+       <div class="static-chart-header">
+           <h3>Cash Outflows from Financing Activities</h3>
+           <div class="more-options">...</div>
+       </div>
+       <div class="chart-container">
+           <canvas id="financingOutflowsChart"></canvas>
+       </div>
+   </div>
+
+
+   <div class="static-chart-card">
+       <div class="static-chart-header">
+           <h3>Net Cash Flow from Financing Activities (Trend)</h3>
+           <div class="more-options">...</div>
+       </div>
+       <div class="chart-container">
+           <canvas id="netFinancingCashFlowChart"></canvas>
+       </div>
+   </div>
+</div>
+<div class="charts">
+   <div class="static-chart-card">
+     <div class="static-chart-header">
+       <h3>Overall Net Cash Flow (Trend)</h3>
+       <div class="more-options">...</div>
+     </div>
+     <div class="chart-container">
+       <canvas id="overallNetCashFlowChart"></canvas>
+     </div>
+   </div>
+   <div></div>
+</div>
+
+
+<div class="pivot-table">
+ <h2>Cash Flow Statement (Monthly)</h2>
+ <table>
+   <thead>
+     <tr>
+       <th>Category</th>
+       <th>June 2025</th>
+       <th>July 2025</th>
+       <th>August 2025</th>
+       <th>September 2025</th>
+       <th>October 2025</th>
+       <th>November 2025</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td class="expandable" onclick="toggleExpand(this)" data-parent="operating">Operating Activities</td>
+       <td>$700,000</td>
+       <td>$780,000</td>
+       <td>$680,000</td>
+       <td>$800,000</td>
+       <td>$750,000</td>
+       <td>$750,000</td>
+     </tr>
+     <tr class="child-operating" style="display: none;">
+       <td style="padding-left: 40px;">Customer Receipts (Inflow)</td>
+       <td>$1,700,000</td>
+       <td>$1,850,000</td>
+       <td>$1,650,000</td>
+       <td>$1,900,000</td>
+       <td>$1,800,000</td>
+       <td>$1,850,000</td>
+     </tr>
+     <tr class="child-operating" style="display: none;">
+       <td style="padding-left: 40px;">Supplier Payments (Outflow)</td>
+       <td>-$480,000</td>
+       <td>-$520,000</td>
+       <td>-$500,000</td>
+       <td>-$540,000</td>
+       <td>-$500,000</td>
+       <td>-$480,000</td>
+     </tr>
+     <tr class="child-operating" style="display: none;">
+       <td style="padding-left: 40px;">Employee Salaries (Outflow)</td>
+       <td>-$440,000</td>
+       <td>-$460,000</td>
+       <td>-$420,000</td>
+       <td>-$460,000</td>
+       <td>-$460,000</td>
+       <td>-$460,000</td>
+     </tr>
+     <tr class="child-operating" style="display: none;">
+       <td style="padding-left: 40px;">Operating Expenses (Outflow)</td>
+       <td>-$80,000</td>
+       <td>-$90,000</td>
+       <td>-$50,000</td>
+       <td>-$100,000</td>
+       <td>-$90,000</td>
+       <td>-$160,000</td>
+     </tr>
+
+
+     <tr>
+       <td class="expandable" onclick="toggleExpand(this)" data-parent="investing">Investing Activities</td>
+       <td>-$250,000</td>
+       <td>-$210,000</td>
+       <td>-$320,000</td>
+       <td>-$225,000</td>
+       <td>-$285,000</td>
+       <td>-$275,000</td>
+     </tr>
+     <tr class="child-investing" style="display: none;">
+       <td style="padding-left: 40px;">Server Equipment (Outflow)</td>
+       <td>-$180,000</td>
+       <td>-$135,000</td>
+       <td>-$240,000</td>
+       <td>-$150,000</td>
+       <td>-$195,000</td>
+       <td>-$165,000</td>
+     </tr>
+     <tr class="child-investing" style="display: none;">
+       <td style="padding-left: 40px;">Software Licenses (Outflow)</td>
+       <td>-$45,000</td>
+       <td>-$45,000</td>
+       <td>-$60,000</td>
+       <td>-$45,000</td>
+       <td>-$60,000</td>
+       <td>-$75,000</td>
+     </tr>
+     <tr class="child-investing" style="display: none;">
+       <td style="padding-left: 40px;">Office Infrastructure (Outflow)</td>
+       <td>-$25,000</td>
+       <td>-$30,000</td>
+       <td>-$20,000</td>
+       <td>-$30,000</td>
+       <td>-$30,000</td>
+       <td>-$35,000</td>
+     </tr>
+
+
+     <tr>
+       <td class="expandable" onclick="toggleExpand(this)" data-parent="financing">Financing Activities</td>
+       <td>-$150,000</td>
+       <td>-$175,000</td>
+       <td>-$150,000</td>
+       <td>-$175,000</td>
+       <td>-$175,000</td>
+       <td>-$175,000</td>
+     </tr>
+     <tr class="child-financing" style="display: none;">
+       <td style="padding-left: 40px;">Debt Repayment (Outflow)</td>
+       <td>-$150,000</td>
+       <td>-$175,000</td>
+       <td>-$150,000</td>
+       <td>-$175,000</td>
+       <td>-$175,000</td>
+       <td>-$175,000</td>
+     </tr>
+    
+     <tr style="font-weight: 700; background: #f9fafb;">
+       <td>Net Cash Flow (Change in Cash)</td>
+       <td>$300,000</td>
+       <td>$395,000</td>
+       <td>$210,000</td>
+       <td>$400,000</td>
+       <td>$290,000</td>
+       <td>$300,000</td>
+     </tr>
+    
+     <tr style="font-weight: 700;">
+       <td>Ending Cash Balance</td>
+       <td>$2,000,000</td>
+       <td>$2,395,000</td>
+       <td>$2,605,000</td>
+       <td>$3,005,000</td>
+       <td>$3,295,000</td>
+       <td>$3,595,000</td>
+     </tr>
+   </tbody>
+ </table>
+</div>
+
+
+<script>
+ // Simple table expansion logic
+ function toggleExpand(el) {
+   el.classList.toggle('expanded');
+   const parent = el.getAttribute('data-parent');
+   if (parent) {
+     const children = document.querySelectorAll(`.child-${parent}`);
+     const isExpanded = el.classList.contains('expanded');
+     children.forEach(child => {
+       child.style.display = isExpanded ? 'table-row' : 'none';
+     });
+   }
+ }
+ document.addEventListener("DOMContentLoaded", function() {
+   document.querySelectorAll('.expandable').forEach(el => {
+     el.classList.remove('expanded');
+   });
+
+
+   // --- Chart Configuration ---
+  
+   const primaryColor = '#7c3aed'; // Purple
+   const dangerColor = '#ef4444';  // Red
+
+
+   // 1. Monthly Cash Flow Summary (Bar Chart) - UPDATED DATA
+   const summaryData = {
+     labels: ['Operating Activities', 'Investing Activities', 'Financing Activities', 'Net Cash Increase'],
+     datasets: [{
+       // Data updated to reflect November 2025 figures from the new pivot table
+       data: [750000, -275000, -175000, 300000],
+       backgroundColor: [
+           primaryColor,
+           dangerColor,
+           dangerColor,
+           primaryColor
+       ],
+       borderRadius: 4
+     }]
+   };
+   new Chart(document.getElementById('monthlySummaryChart'), {
+     type: 'bar',
+     data: summaryData,
+     options: {
+       responsive: true,
+       maintainAspectRatio: false,
+       plugins: {
+         legend: { display: false },
+         title: { display: false },
+         tooltip: { callbacks: { label: (context) => context.dataset.data[context.dataIndex].toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } }
+       },
+       scales: {
+         y: { beginAtZero: false, ticks: { callback: (value) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } },
+         x: { grid: { display: false } }
+       }
+     }
+   });
+
+
+   // 2. Cash Outflows from Operating Activities (Bar Chart) - UPDATED DATA
+   const operatingOutflowsData = {
+     labels: ['Supplier Payments', 'Employee Salaries', 'Operating Expenses'],
+     datasets: [{
+       label: 'Cash Outflows',
+       // Nov 2025 Outflows (Negative is more appropriate for outflows)
+       data: [-480000, -460000, -160000],
+       backgroundColor: [
+           dangerColor, 
+           dangerColor, 
+           dangerColor, 
+       ],
+       borderRadius: 4
+     }]
+   };
+   new Chart(document.getElementById('operatingTrendChart'), {
+     type: 'bar',
+     data: operatingOutflowsData,
+     options: {
+       responsive: true,
+       maintainAspectRatio: false,
+       plugins: {
+         legend: { display: false },
+         tooltip: { callbacks: { label: (context) => context.dataset.label + ': ' + context.parsed.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } }
+       },
+       scales: {
+         y: {
+           beginAtZero: false,
+           ticks: { callback: (value) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) },
+           title: { display: true, text: 'Amount ($)' }
+         },
+         x: {
+           grid: { display: false },
+           title: { display: true, text: 'Category' }
+         }
+       }
+     }
+   });
+  
+     // 3. Net Cash Flow from Operating Activities (Line/Area Chart) - UPDATED DATA
+   const netOperatingCashFlowData = {
+     labels: ['Jun 25', 'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25'],
+     // Data from the new pivot table's Operating Activities row
+     datasets: [{
+       label: 'Net Cash Flow',
+       data: [700000, 780000, 680000, 800000, 750000, 750000],
+       borderColor: primaryColor,
+       backgroundColor: 'rgba(124, 58, 237, 0.4)',
+       fill: 'origin',
+       tension: 0.4
+     }]
+   };
+   new Chart(document.getElementById('operatingBreakdownChart'), {
+     type: 'line',
+     data: netOperatingCashFlowData,
+     options: {
+       responsive: true,
+       maintainAspectRatio: false,
+       plugins: {
+         legend: { display: false },
+         tooltip: { callbacks: { label: (context) => context.dataset.label + ': ' + context.parsed.y.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } }
+       },
+       scales: {
+         y: {
+           beginAtZero: false,
+           ticks: { callback: (value) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) },
+           title: { display: true, text: 'Net Cash Flow ($)' }
+         },
+         x: {
+           grid: { display: false },
+           title: { display: true, text: 'Month' }
+         }
+       }
+     }
+   });
+
+
+      // 4. Cash Outflows from Investing Activities (Bar Chart) - UPDATED DATA
+   const investingOutflowsData = {
+     labels: ['Server Equipment', 'Software Licenses', 'Office Infrastructure'],
+     datasets: [{
+       label: 'Cash Outflows',
+       // Nov 2025 Investing Outflows (Negative is more appropriate for outflows)
+       data: [-165000, -75000, -35000],
+       backgroundColor: [
+           dangerColor,  
+           dangerColor,  
+           dangerColor,  
+       ],
+       borderRadius: 4
+     }]
+   };
+   new Chart(document.getElementById('investingBreakdownChart'), {
+     type: 'bar',
+     data: investingOutflowsData,
+     options: {
+       responsive: true,
+       maintainAspectRatio: false,
+       plugins: {
+         legend: { display: false },
+         tooltip: { callbacks: { label: (context) => context.dataset.label + ': ' + context.parsed.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } }
+       },
+       scales: {
+         y: {
+           beginAtZero: false,
+           ticks: { callback: (value) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) },
+           title: { display: true, text: 'Amount ($)' }
+         },
+         x: {
+           grid: { display: false },
+           title: { display: true, text: 'Category' }
+         }
+       }
+     }
+   });
+
+
+   // 5. Cash Outflows from Financing Activities (Bar Chart) - UPDATED DATA
+   const financingOutflowsData = {
+       labels: ['Debt Repayment', 'Lease Payments', 'Share Issuance'],
+       datasets: [{
+           // Nov 2025 Financing Outflows
+           data: [-175000, 0, 0], // Simplified to just Debt Repayment from the table
+           backgroundColor: [
+               dangerColor,
+               dangerColor,
+               primaryColor
+           ],
+           borderRadius: 4
+       }]
+   };
+   new Chart(document.getElementById('financingOutflowsChart'), {
+       type: 'bar',
+       data: financingOutflowsData,
+       options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           plugins: {
+               legend: { display: false },
+               title: { text: 'Cash Outflows from Financing Activities', display: false },
+               tooltip: { callbacks: { label: (context) => context.dataset.data[context.dataIndex].toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } }
+           },
+           scales: {
+               y: {
+                   beginAtZero: false,
+                   ticks: { callback: (value) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) },
+                   title: { display: true, text: 'Amount ($)' }
+               },
+               x: {
+                   grid: { display: false },
+                   title: { display: true, text: 'Category' }
+               }
+           }
+       }
+   });
+
+
+   // 6. Net Cash Flow from Financing Activities (Line/Area Chart) - UPDATED DATA
+   const netFinancingCashFlowData = {
+       labels: ['Jun 25', 'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25'],
+       // Data from the new pivot table's Financing Activities row
+       datasets: [{
+           label: 'Net Cash Flow',
+           data: [-150000, -175000, -150000, -175000, -175000, -175000],
+           borderColor: dangerColor, // Changed to red as it's consistently negative
+           backgroundColor: 'rgba(239, 68, 68, 0.3)', // Light red fill
+           fill: 'origin',
+           tension: 0.4
+       }]
+   };
+   new Chart(document.getElementById('netFinancingCashFlowChart'), {
+       type: 'line',
+       data: netFinancingCashFlowData,
+       options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           plugins: {
+               legend: { display: false },
+               title: { text: 'Net Cash Flow from Financing Activities', display: false },
+               tooltip: { callbacks: { label: (context) => context.dataset.label + ': ' + context.parsed.y.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } }
+           },
+           scales: {
+               y: {
+                   beginAtZero: false,
+                   ticks: { callback: (value) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) },
+                   title: { display: true, text: 'Net Cash Flow ($)' }
+               },
+               x: {
+                   grid: { display: false },
+                   title: { display: true, text: 'Month' }
+               }
+           }
+       }
+   });
+  
+ // 7. Overall Net Cash Flow (Line/Area Chart) - UPDATED DATA
+   const overallNetCashFlowData = {
+     labels: ['Jun 25', 'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25'],
+     // Data from the new pivot table's Net Cash Flow row
+     datasets: [{
+       label: 'Overall Net Cash Flow',
+       data: [300000, 395000, 210000, 400000, 290000, 300000],
+       borderColor: primaryColor,
+       backgroundColor: 'rgba(124, 58, 237, 0.4)',
+       fill: 'origin',
+       tension: 0.4
+     }]
+   };
+   new Chart(document.getElementById('overallNetCashFlowChart'), {
+     type: 'line',
+     data: overallNetCashFlowData,
+     options: {
+       responsive: true,
+       maintainAspectRatio: false,
+       plugins: {
+         legend: { display: false },
+         tooltip: { callbacks: { label: (context) => context.dataset.label + ': ' + context.parsed.y.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) } }
+       },
+       scales: {
+         y: {
+             beginAtZero: false,
+             ticks: { callback: (value) => value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) },
+             title: { display: true, text: 'Net Cash Flow ($)' }
+         },
+         x: {
+             grid: { display: false },
+             title: { display: true, text: 'Month' }
+         }
+       }
+     }
+   });
+
+
+ });
+</script>
+
+
+</div>
+</body>
+</html>
+
+
+
