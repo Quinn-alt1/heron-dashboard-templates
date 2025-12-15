@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Balance Sheet Dashboard - TechVista Solutions</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+h1, h2, h3 {
+  font-weight: 600;
+  color: #1f2937;
+  margin-top: 0;
+}
+h1 {
+  font-size: 1.5rem;
+}
+.header {
+  margin-bottom: 30px;
+}
+.company-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+.company-logo {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+.company-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+.company-tagline {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0 0 0 65px;
+}
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.widget-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+.toolbar button {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #374151;
+  background: #ffffff;
+  border: 1px solid #f2f4f7;
+  margin-right: 8px;
+  cursor: pointer;
+  padding: 7px 12px;
+  border-radius: 6px;
+  transition: background 0.2s, border-color 0.2s;
+  vertical-align: middle;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.toolbar button:last-child { margin-right: 0; }
+.toolbar button:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+
+.toolbar i {
+   font-size: 14px;
+   margin-right: 6px;
+   vertical-align: text-bottom;
+   color: #374151;
+}
+
+
+.executive-summary {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 25px 20px 15px 20px;
+  margin-bottom: 30px;
+}
+.executive-summary h2 {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.findings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.findings-section h3 {
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+}
+.finding-item strong {
+  font-weight: 700;
+  color: #1f2937;
+}
+.finding-item p {
+  font-size: 1rem;
+  color: #374151;
+  margin: 5px 0 0 0;
+}
+.last-updated {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 12px;
+}
+
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.card {
+  background: #fff;
+  padding: 18px 17px 18px 17px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.13);
+}
+.card h2 {
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+.card p {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.subtitle {
+  font-size: 0.8rem;
+  color: #374151;
+  margin-top: 5px;
+}
+
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 30px;
+  margin-bottom: 25px;
+}
+.single-chart-row {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.static-chart-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.09);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 320px;
+}
+.static-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.static-chart-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin: 0;
+}
+.more-options {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.static-chart-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+.chart-label-line {
+   stroke: #a78bfa;
+   stroke-width: 1.5;
+   fill: none;
+   pointer-events: none;
+}
+.chart-label-text {
+   font-size: 10px;
+   fill: #111827;
+   font-weight: 600;
+}
+.chart-axis-line {
+  stroke: #d1d5db;
+  stroke-width: 1;
+}
+.chart-axis-text {
+  font-size: 10px;
+  fill: #4b5563;
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 600;
+}
+.chart-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+}
+
+
+.pivot-table {
+  margin-top: 40px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.09);
+  overflow: hidden;
+}
+.pivot-table h2 {
+  padding: 15px 20px;
+  background: #f3f4f6;
+  margin: 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 1.07rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+tr:hover {
+  background-color: #f9fafb;
+}
+.expandable {
+  cursor: pointer;
+  font-weight: 700;
+  position: relative;
+  padding-left: 25px;
+}
+.expandable::before {
+  content: '▶';
+  position: absolute;
+  left: 5px;
+  transition: transform 0.2s;
+  color: #111827;
+  font-size: 0.7rem;
+}
+.expandable.expanded::before {
+  transform: rotate(90deg);
+}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Balance Sheet</h1>
+</div>
+<div class="content">
+
+
+<div class="widget-header">
+  <div class="widget-title">All Widgets</div>
+ <div class="toolbar">
+<button>
+<i class="far fa-share-from-square"></i> Share
+</button>
+<button>
+<i class="fas fa-filter"></i> Filter
+</button>
+<button>
+<i class="fas fa-sync-alt"></i> Sync
+</button>
+<button>
+<i class="far fa-star"></i> Summarize Dashboard
+</button>
+<button>
+<i class="fas fa-database"></i> Data Sources
+</button>
+<button>
+<i class="far fa-gear"></i> Settings
+</button>
+<button>
+<i class="far fa-pen-to-square"></i> Edit
+</button>
+<button>
+<i class="far fa-trash-can"></i> Delete
+</button>
+</div>
+</div>
+
+
+<div class="executive-summary">
+  <h2>Executive Summary</h2>
+  <p>TechVista Solutions demonstrates solid financial health with a company valuation of $5 million. As a mid-sized cloud infrastructure and enterprise software provider, the company maintains strong asset positioning and healthy liquidity ratios, reflecting prudent financial management and sustainable growth trajectory.</p>
+  <div class="findings-grid">
+    <div class="findings-section">
+      <h3>Key Findings</h3>
+      <div class="finding-item">
+        <strong>Balanced Capital Structure:</strong>
+        <p>With $5M in total assets backed by $3M in equity, TechVista maintains a conservative 0.67 debt-to-equity ratio, providing financial flexibility for strategic initiatives while minimizing leverage risk.</p>
+      </div>
+      <div class="finding-item">
+        <strong>Strong Liquidity:</strong>
+        <p>A current ratio of 2.5 demonstrates TechVista's ability to comfortably meet short-term obligations, with substantial cash reserves supporting operational continuity and growth investments.</p>
+      </div>
+    </div>
+    <div class="findings-section">
+      <h3>Strategic Recommendations</h3>
+      <div class="finding-item">
+        <strong>Scale Infrastructure Investments:</strong>
+        <p>Leverage the healthy cash position to expand cloud infrastructure capabilities, enabling service to larger enterprise clients and accelerating revenue growth.</p>
+      </div>
+      <div class="finding-item">
+        <strong>Optimize Working Capital:</strong>
+        <p>Maintain focus on accounts receivable collection to sustain strong cash flow, while exploring strategic debt refinancing opportunities to reduce financing costs.</p>
+      </div>
+    </div>
+  </div>
+  <div class="last-updated">Last updated: November 28, 2025 10:30 AM</div>
+</div>
+
+
+<div class="grid">
+  <div class="card">
+    <h2>Total Assets</h2>
+    <p>$5,000,000</p>
+  </div>
+  <div class="card">
+    <h2>Total Liabilities</h2>
+    <p>$2,000,000</p>
+  </div>
+  <div class="card">
+    <h2>Total Equity</h2>
+    <p>$3,000,000</p>
+  </div>
+  <div class="card">
+    <h2>Current Ratio</h2>
+    <p>2.5</p>
+    <div class="subtitle">Current Assets / Current Liabilities</div>
+  </div>
+  <div class="card">
+    <h2>Quick Ratio</h2>
+    <p>2.1</p>
+    <div class="subtitle">(Current Assets - Inventory) / Current Liabilities</div>
+  </div>
+  <div class="card">
+    <h2>Cash Ratio</h2>
+    <p>1.2</p>
+    <div class="subtitle">Cash / Current Liabilities</div>
+  </div>
+  <div class="card">
+    <h2>Debt-to-Equity Ratio</h2>
+    <p>0.67</p>
+    <div class="subtitle">Liabilities / Equity</div>
+  </div>
+  <div class="card">
+    <h2>Working Capital</h2>
+    <p>$1,200,000</p>
+    <div class="subtitle">Current Assets - Current Liabilities</div>
+  </div>
+</div>
+
+
+<h2 style="margin: 40px 0 20px 0; font-size: 1.2rem; font-weight: 600; color: #1f2937;">
+  Composition Charts
+</h2>
+<div class="charts">
+  <div class="static-chart-card">
+    <div class="static-chart-header">
+      <h3>Asset Composition</h3>
+      <div class="more-options">...</div>
+    </div>
+    <div class="static-chart-container">
+       <svg width="80%" height="80%" viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(50, 0)">
+
+
+          <path d="M 125 25 A 100 100 0 0 1 210 85 L 125 125 Z" fill="#7c3aed" />
+          <path d="M 210 85 A 100 100 0 0 1 180 205 L 125 125 Z" fill="#a78bfa" />
+
+
+          <path d="M 180 205 A 100 100 0 0 1 50 190 L 125 125 Z" fill="#c4b5fd" />
+
+
+          <path d="M 50 190 A 100 100 0 0 1 125 25 L 125 125 Z" fill="#e9d5ff" />
+       
+          <circle cx="125" cy="125" r="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+
+
+          <polyline points="210,85 260,70 360,70" class="chart-label-line" />
+          <text x="360" y="73" class="chart-label-text">Cash & Equivalents: $1,000,000</text>
+       
+          <polyline points="200,180 240,200 360,200" class="chart-label-line" />
+          <text x="360" y="203" class="chart-label-text">Accounts Receivable: $800,000</text>
+
+
+          <polyline points="80,200 30,215 20,215" class="chart-label-line" />
+          <text x="10" y="218" class="chart-label-text" text-anchor="end">Other Current Assets: $200,000</text>
+
+
+          <polyline points="60,110 20,80 20,80" class="chart-label-line" />
+          <text x="10" y="77" class="chart-label-text" text-anchor="end">Fixed Assets: $3,000,000</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+
+  <div class="static-chart-card">
+    <div class="static-chart-header">
+      <h3>Liability Composition</h3>
+      <div class="more-options">...</div>
+    </div>
+    <div class="static-chart-container">
+   
+      <svg width="80%" height="80%" viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(75, 0)">   
+          <path d="M 125 25 A 100 100 0 0 1 155 28 L 125 125 Z" fill="#7c3aed" />
+         
+          <path d="M 155 28 A 100 100 0 0 1 205 170 L 125 125 Z" fill="#e9d5ff" />
+           <path d="M 205 170 A 100 100 0 0 1 60 210 L 125 125 Z" fill="#c4b5fd" />
+          <path d="M 60 210 A 100 100 0 0 1 125 25 L 125 125 Z" fill="#a78bfa" />
+
+
+          <circle cx="125" cy="125" r="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+
+
+          <polyline points="145,35 200,15 360,15" class="chart-label-line" />
+          <text x="360" y="18" class="chart-label-text">Short-term Debt: $150,000</text>
+       
+          <polyline points="205,130 260,120 360,120" class="chart-label-line" />
+          <text x="360" y="123" class="chart-label-text">Long-term Debt: $1,200,000</text>
+
+
+          <polyline points="170,200 220,220 360,220" class="chart-label-line" />
+          <text x="360" y="223" class="chart-label-text">Accounts Payable: $450,000</text>
+
+
+          <polyline points="75,195 30,195 20,195" class="chart-label-line" />
+          <text x="10" y="198" class="chart-label-text" text-anchor="end">Accrued Liabilities: $200,000</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+
+<div class="single-chart-row charts" style="grid-template-columns: 1fr; margin-top: 80px; margin-bottom: 25px;">
+  <div class="static-chart-card" style="height: 202px; max-width: 100%; margin: 0;">
+    <div class="static-chart-header">
+      <h3 style="font-size: 1.2rem;">Assets vs. Liabilities & Equity</h3>
+      <div class="more-options">...</div>
+    </div>
+    <div class="static-chart-container" style="flex-direction: column;">
+     
+      <div class="chart-legend" style="padding-top: 5px; margin-bottom: 5px; font-size: 1rem;">
+          <div class="chart-legend-item">
+              <div class="chart-legend-color" style="background-color: #7c3aed;"></div>
+              Assets
+          </div>
+          <div class="chart-legend-item">
+              <div class="chart-legend-color" style="background-color: #c4b5fd;"></div>
+              Equity
+          </div>
+          <div class="chart-legend-item">
+              <div class="chart-legend-color" style="background-color: #a78bfa;"></div>
+              Liabilities
+          </div>
+      </div>
+
+
+      <svg width="95%" height="90%" viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(60, 15)">
+         
+          <line x1="0" y1="0" x2="0" y2="138.6" class="chart-axis-line"/>
+          <line x1="0" y1="138.6" x2="440" y2="138.6" class="chart-axis-line"/>
+         
+          <text x="-5" y="138.6" text-anchor="end" class="chart-axis-text" style="font-size: 7px;">0</text>
+          <text x="-5" y="103.95" text-anchor="end" class="chart-axis-text" style="font-size: 7px;">2,000,000</text>
+          <text x="-5" y="69.3" text-anchor="end" class="chart-axis-text" style="font-size: 7px;">4,000,000</text>
+          <text x="-5" y="34.65" text-anchor="end" class="chart-axis-text" style="font-size: 7px;">6,000,000</text>
+          <text x="-5" y="0" text-anchor="end" class="chart-axis-text" style="font-size: 7px;">8,000,000</text>
+
+
+          <text x="-45" y="69.3" text-anchor="middle" transform="rotate(-90, -45, 69.3)" class="chart-axis-text" style="font-size: 7px;">Value (USD)</text>
+
+
+          <rect x="120" y="51.975" width="42" height="86.625" fill="#7c3aed"/>
+          <text x="141" y="155" text-anchor="middle" class="chart-axis-text" style="font-size: 7px;">Assets</text>
+
+
+          <rect x="340" y="103.95" width="42" height="34.65" fill="#a78bfa"/>
+         
+          <rect x="340" y="51.975" width="42" height="51.975" fill="#c4b5fd"/>
+          <text x="361" y="155" text-anchor="middle" class="chart-axis-text" style="font-size: 7px;">Liabilities & Equity</text>
+         
+        </g>
+      </svg>
+     
+    </div>
+  </div>
+</div>
+
+
+ <div class="pivot-table" style="margin-top: 400px;">
+  <h2>Balance Sheet</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>2020</th>
+        <th>2021</th>
+        <th>2022</th>
+        <th>2023</th>
+        <th>2024</th>
+        <th>2025</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="expandable" onclick="toggleExpand(this)" data-parent="assets">Assets</td>
+        <td>$2,800,000</td>
+        <td>$3,400,000</td>
+        <td>$3,900,000</td>
+        <td>$4,300,000</td>
+        <td>$4,600,000</td>
+        <td>$5,000,000</td>
+      </tr>
+      <tr class="child-assets" style="display: none;">
+        <td class="expandable" style="padding-left: 40px;" onclick="toggleExpand(this)" data-parent="current-assets">Current Assets</td>
+        <td>$900,000</td>
+        <td>$1,100,000</td>
+        <td>$1,300,000</td>
+        <td>$1,500,000</td>
+        <td>$1,750,000</td>
+        <td>$2,000,000</td>
+      </tr>
+      <tr class="child-current-assets" style="display: none;">
+        <td style="padding-left: 60px;">Cash & Equivalents</td>
+        <td>$500,000</td>
+        <td>$600,000</td>
+        <td>$750,000</td>
+        <td>$850,000</td>
+        <td>$950,000</td>
+        <td>$1,000,000</td>
+      </tr>
+      <tr class="child-current-assets" style="display: none;">
+        <td style="padding-left: 60px;">Accounts Receivable</td>
+        <td>$350,000</td>
+        <td>$450,000</td>
+        <td>$500,000</td>
+        <td>$600,000</td>
+        <td>$750,000</td>
+        <td>$800,000</td>
+      </tr>
+      <tr class="child-current-assets" style="display: none;">
+        <td style="padding-left: 60px;">Other Current Assets</td>
+        <td>$50,000</td>
+        <td>$50,000</td>
+        <td>$50,000</td>
+        <td>$50,000</td>
+        <td>$50,000</td>
+        <td>$200,000</td>
+      </tr>
+      <tr class="child-assets" style="display: none;">
+        <td class="expandable" style="padding-left: 40px;" onclick="toggleExpand(this)" data-parent="fixed-assets">Fixed Assets</td>
+        <td>$1,900,000</td>
+        <td>$2,300,000</td>
+        <td>$2,600,000</td>
+        <td>$2,800,000</td>
+        <td>$2,850,000</td>
+        <td>$3,000,000</td>
+      </tr>
+      <tr class="child-fixed-assets" style="display: none;">
+        <td style="padding-left: 60px;">Property & Equipment</td>
+        <td>$1,400,000</td>
+        <td>$1,700,000</td>
+        <td>$1,900,000</td>
+        <td>$2,050,000</td>
+        <td>$2,100,000</td>
+        <td>$2,200,000</td>
+      </tr>
+      <tr class="child-fixed-assets" style="display: none;">
+        <td style="padding-left: 60px;">Software & Technology</td>
+        <td>$500,000</td>
+        <td>$600,000</td>
+        <td>$700,000</td>
+        <td>$750,000</td>
+        <td>$750,000</td>
+        <td>$800,000</td>
+      </tr>
+
+
+      <tr>
+        <td class="expandable" onclick="toggleExpand(this)" data-parent="liabilities">Liabilities</td>
+        <td>$1,050,000</td>
+        <td>$1,250,000</td>
+        <td>$1,450,000</td>
+        <td>$1,650,000</td>
+        <td>$1,850,000</td>
+        <td>$2,000,000</td>
+      </tr>
+      <tr class="child-liabilities" style="display: none;">
+        <td class="expandable" style="padding-left: 40px;" onclick="toggleExpand(this)" data-parent="current-liabilities">Current Liabilities</td>
+        <td>$400,000</td>
+        <td>$500,000</td>
+        <td>$600,000</td>
+        <td>$700,000</td>
+        <td>$750,000</td>
+        <td>$800,000</td>
+      </tr>
+      <tr class="child-current-liabilities" style="display: none;">
+        <td style="padding-left: 60px;">Accounts Payable</td>
+        <td>$200,000</td>
+        <td>$250,000</td>
+        <td>$300,000</td>
+        <td>$350,000</td>
+        <td>$400,000</td>
+        <td>$450,000</td>
+      </tr>
+      <tr class="child-current-liabilities" style="display: none;">
+        <td style="padding-left: 60px;">Short-term Debt</td>
+        <td>$100,000</td>
+        <td>$125,000</td>
+        <td>$150,000</td>
+        <td>$150,000</td>
+        <td>$150,000</td>
+        <td>$150,000</td>
+      </tr>
+      <tr class="child-current-liabilities" style="display: none;">
+        <td style="padding-left: 60px;">Accrued Liabilities</td>
+        <td>$100,000</td>
+        <td>$125,000</td>
+        <td>$150,000</td>
+        <td>$200,000</td>
+        <td>$200,000</td>
+        <td>$200,000</td>
+      </tr>
+      <tr class="child-liabilities" style="display: none;">
+        <td style="padding-left: 40px;">Long-term Liabilities</td>
+        <td>$650,000</td>
+        <td>$750,000</td>
+        <td>$850,000</td>
+        <td>$950,000</td>
+        <td>$1,100,000</td>
+        <td>$1,200,000</td>
+      </tr>
+
+
+      <tr>
+        <td class="expandable" onclick="toggleExpand(this)" data-parent="equity">Equity</td>
+        <td>$1,750,000</td>
+        <td>$2,150,000</td>
+        <td>$2,450,000</td>
+        <td>$2,650,000</td>
+        <td>$2,750,000</td>
+        <td>$3,000,000</td>
+      </tr>
+      <tr class="child-equity" style="display: none;">
+        <td style="padding-left: 40px;">Common Stock</td>
+        <td>$500,000</td>
+        <td>$500,000</td>
+        <td>$500,000</td>
+        <td>$500,000</td>
+        <td>$500,000</td>
+        <td>$500,000</td>
+      </tr>
+      <tr class="child-equity" style="display: none;">
+        <td style="padding-left: 40px;">Retained Earnings</td>
+        <td>$1,250,000</td>
+        <td>$1,650,000</td>
+        <td>$1,950,000</td>
+        <td>$2,150,000</td>
+        <td>$2,250,000</td>
+        <td>$2,500,000</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<script>
+  function toggleExpand(el) {
+    el.classList.toggle('expanded');
+    const parent = el.getAttribute('data-parent');
+    if (parent) {
+      const children = document.querySelectorAll('.child-' + parent);
+      const isExpanded = el.classList.contains('expanded');
+      children.forEach(child => {
+        child.style.display = isExpanded ? 'table-row' : 'none';
+        if (!isExpanded) {
+          const nestedExpandable = child.querySelector('.expandable');
+          if (nestedExpandable && nestedExpandable.classList.contains('expanded')) {
+            nestedExpandable.classList.remove('expanded');
+            const nestedParent = nestedExpandable.getAttribute('data-parent');
+            if (nestedParent) {
+              document.querySelectorAll('.child-' + nestedParent).forEach(nestedChild => {
+                nestedChild.style.display = 'none';
+              });
+            }
+          }
+        }
+      });
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.expandable').forEach(el => {
+      el.classList.remove('expanded');
+    });
+  });
+</script>
+
+
+</div>
+</body>
+</html>
+
+
+
