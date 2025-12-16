@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accounts Receivable Dashboard</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gray-50">
+
+  <!-- Header -->
+  <div class="bg-white border-b border-gray-200 px-8 py-5">
+    <div class="flex justify-between items-center">
+      <h1 class="text-gray-900 font-normal text-2xl">Accounts Receivable</h1>
+      <div class="text-sm text-gray-500">
+        <span>Sandbox Inc.</span>
+        <span class="mx-2">›</span>
+        <span>Accounts Receivable</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="px-8 py-4 bg-white border-b">
+    <div class="flex justify-end gap-2 flex-wrap">
+      <button class="btn"><i data-lucide="share-2"></i> Share</button>
+      <button class="btn"><i data-lucide="filter"></i> Filter</button>
+      <button class="btn"><i data-lucide="refresh-cw"></i> Sync</button>
+      <button class="btn"><i data-lucide="sparkles"></i> Summarize Dashboard</button>
+      <button class="btn"><i data-lucide="database"></i> Data Sources</button>
+      <button class="btn"><i data-lucide="settings"></i> Settings</button>
+      <button class="btn"><i data-lucide="edit"></i> Edit</button>
+      <button class="btn"><i data-lucide="trash-2"></i> Delete</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="px-8 py-6">
+
+    <!-- Executive Summary -->
+    <div class="bg-white rounded-xl shadow mb-6">
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-4">
+          <h2 class="font-medium text-gray-900">Executive Summary</h2>
+          <div class="flex gap-2 text-gray-400">
+            <i data-lucide="chevron-down"></i>
+            <i data-lucide="more-vertical"></i>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mb-6">
+          The Accounts Receivable dashboard provides a comprehensive overview of the financial health regarding outstanding invoices and obligations, highlighting significant insights on account balances and client liabilities.
+        </p>
+        <div class="grid grid-cols-2 gap-12 text-sm">
+          <div>
+            <h3 class="font-semibold mb-3">Key Findings</h3>
+            <ul class="space-y-2 text-gray-700">
+              <li><b>Total Accounts Receivable:</b> $1,800,000 outstanding.</li>
+              <li><b>Key Outstanding Client:</b> Acme Corp – $240,000.</li>
+              <li><b>A/R Aging:</b> $720,000 current, $180,000 over 90 days.</li>
+              <li><b>DSO:</b> 66 days.</li>
+              <li><b>Monthly Trend:</b> Peak of $1,850,000 in June.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-3">Strategic Recommendations</h3>
+            <ul class="space-y-2 text-gray-700">
+              <li><b>Strengthen Collections:</b> Focus on overdue accounts.</li>
+              <li><b>Monitor Key Clients:</b> Regular follow‑ups for Acme Corp.</li>
+              <li><b>Credit Policies:</b> Review limits and terms.</li>
+              <li><b>Reporting:</b> Increase reporting frequency.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pt-4 mt-6 border-t text-xs text-gray-400">Last updated: 2025‑08‑18 12:16</div>
+      </div>
+    </div>
+
+    <!-- Top Stats -->
+    <div class="grid grid-cols-4 gap-6 mb-6">
+      <div class="stat">Total Accounts Receivable<div class="stat-value">$5,000,000</div></div>
+      <div class="stat">Total Accounts Payable<div class="stat-value">$700,000</div></div>
+      <div class="stat">Key Outstanding Client<div class="text-xl font-semibold">Acme Corp</div><div class="text-sm text-gray-500">$240,000</div></div>
+      <div class="stat">Days Sales Outstanding<div class="stat-value">66</div></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-2 gap-6 mb-6">
+      <div class="card">
+        <div class="flex justify-between mb-4"><h3 class="card-title">Accounts Receivable Aging</h3><i data-lucide="more-vertical"></i></div>
+        <canvas id="agingChart" height="260"></canvas>
+      </div>
+      <div class="card">
+        <div class="flex justify-between mb-4"><h3 class="card-title">Monthly A/R Balance Trend</h3><i data-lucide="more-vertical"></i></div>
+        <canvas id="trendChart" height="260"></canvas>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="card-title">Accounts Receivable Per Customer</h3>
+        <i data-lucide="download"></i>
+      </div>
+
+      <div class="relative mb-4">
+        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input id="search" type="text" placeholder="Search" class="w-full pl-10 pr-4 py-2 border rounded" />
+      </div>
+
+      <table class="w-full text-sm">
+        <thead class="border-b">
+          <tr>
+            <th class="text-left py-2 w-16">#</th>
+            <th class="text-left py-2"><input placeholder="Filter Customer" class="w-full border px-2 py-1 rounded"></th>
+            <th class="text-left py-2"><input placeholder="Filter Total" class="w-full border px-2 py-1 rounded"></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+
+      <div class="flex justify-between items-center mt-4 text-sm">
+        <div>Rows per page:
+          <select id="rowsPerPage" class="border px-2 py-1 rounded">
+            <option>5</option>
+            <option selected>10</option>
+            <option>20</option>
+          </select>
+        </div>
+        <div id="pagination" class="flex gap-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Styles -->
+  <style>
+    .btn{display:flex;align-items:center;gap:6px;background:#e5e7eb;padding:6px 10px;border-radius:12px;font-size:13px;font-weight:600}
+    .stat{background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .stat-value{font-size:30px;font-weight:600}
+    .card{background:#fff;padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .card-title{font-weight:500;margin-bottom:16px}
+  </style>
+
+  <!-- Scripts -->
+  <script>
+    lucide.createIcons();
+
+    /* Charts */
+    new Chart(document.getElementById('agingChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Current','1-30','31-60','61-90','91+'],
+        datasets: [{ data: [2100000,1300000,900000,450000,250000], backgroundColor: '#8b5cf6' }]
+      },
+      options: { plugins:{legend:{display:false}} }
+    });
+
+    new Chart(document.getElementById('trendChart'), {
+      type: 'line',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'],
+        datasets: [{ data: [3900000,4050000,4350000,4600000,4900000,5100000,5300000,5150000,5000000,4900000,4200000], fill:true, borderColor:'#8b5cf6', backgroundColor:'rgba(139,92,246,.15)' }]
+      },
+      options: { plugins:{legend:{display:false}} }
+    });
+
+    /* Table Logic */
+    const customers = [
+      {id:11,name:'Rondonuwu Fruit and Vegi',total:37000},
+      {id:12,name:'Shara Barnett',total:90000},
+      {id:13,name:'Sonnenschein Family Store',total:115000},
+      {id:14,name:'Sushi by Katsuyuki',total:65000},
+      {id:15,name:'Travis Waldron',total:85000},
+      {id:16,name:'Weiskopf Consulting',total:130000},
+      {id:17,name:'Pacific Foods Inc',total:195000},
+      {id:18,name:'Mountain View Grocery',total:178000},
+      {id:19,name:'Coastal Supplies Co',total:242000},
+      {id:20,name:'Downtown Deli',total:152000},
+      {id:21,name:'Alpine Restaurants',total:320000},
+      {id:22,name:'Harbor Logistics',total:280000},
+      {id:23,name:'Metro Market Group',total:410000},
+      {id:24,name:'Summit Trading Co',total:365000},
+      {id:25,name:'Riverside Distributors',total:290000}
+    ];
+
+    let page = 1;
+
+    function renderTable(){
+      const rows = parseInt(rowsPerPage.value);
+      const q = search.value.toLowerCase();
+      const filtered = customers.filter(c=>c.name.toLowerCase().includes(q));
+      const pages = Math.ceil(filtered.length/rows);
+      const slice = filtered.slice((page-1)*rows,page*rows);
+
+      tableBody.innerHTML = slice.map(c=>`<tr class='border-b'><td>${c.id}</td><td>${c.name}</td><td>$${c.total.toLocaleString()}</td></tr>`).join('');
+
+      pagination.innerHTML = Array.from({length:pages},(_,i)=>`<button class='px-2 py-1 border rounded ${page===i+1?'bg-purple-600 text-white':''}' onclick='page=${i+1};renderTable()'>${i+1}</button>`).join('');
+    }
+
+    search.oninput = ()=>{page=1;renderTable()};
+    rowsPerPage.onchange = ()=>{page=1;renderTable()};
+
+    renderTable();
+  </script>
+
+</body>
+</html>
