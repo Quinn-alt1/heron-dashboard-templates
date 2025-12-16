@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Executive Summary Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <!-- ECharts CDN -->
   <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: #f7f7f7;
       margin: 0;
       padding: 0;
+      color: #222;
     }
+
     .dashboard-background {
       background: #fff;
       border-radius: 16px;
@@ -21,22 +25,26 @@
       margin: 24px auto;
       max-width: 2000px;
     }
+
     .dashboard-carousel {
       padding: 20px;
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
+
     .dashboard-row {
       display: flex;
       gap: 32px;
       margin-bottom: 24px;
       align-items: stretch;
+      flex-wrap: wrap; /* helps on smaller screens */
     }
+
     .dashboard-health-score,
     .dashboard-tasks {
       flex: 1 1 0;
-      min-width: 0;
+      min-width: 350px;
       min-height: 400px;
       display: flex;
       flex-direction: column;
@@ -45,46 +53,51 @@
       background: #fafafa;
       border-radius: 12px;
       padding: 24px;
-      min-width: 350px;
     }
+
     .dashboard-health-score {
       align-items: center;
       justify-content: flex-start;
       padding-bottom: 48px;
       position: relative;
     }
+
     .health-score-label {
       text-align: center;
       margin-top: -70px;
       position: relative;
-      top: 0;
-      left: 0;
       width: 100%;
     }
+
     .score {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #444;
-      margin-bottom: 0;
+      display: none;
     }
+
     .score-change {
       color: #888;
       font-size: 1.1rem;
       margin-top: -28px;
     }
+
     .score-status {
       font-size: 1.2rem;
       font-weight: 600;
       margin-top: 8px;
+    }
+
+    .score-status.good {
       color: #228B22;
     }
+
     .dashboard-tasks {
       align-items: flex-start;
     }
+
     .tasks-list {
       margin-top: 16px;
       width: 100%;
     }
+
     .task-item {
       background: #fff;
       border-radius: 8px;
@@ -96,30 +109,36 @@
       gap: 12px;
       text-align: left;
     }
+
     .task-item > div {
       text-align: left;
     }
+
     .task-checkbox {
       margin-top: 4px;
     }
+
     .task-details {
       color: #888;
       font-size: 0.95rem;
       margin-top: 8px;
       white-space: pre-line;
     }
+
     /* Metrics grid layout */
     .dashboard-metrics {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
+
     .metrics-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 20px;
       margin-bottom: 10px;
     }
+
     .metric-card {
       background: #fafafa;
       border-radius: 10px;
@@ -129,41 +148,65 @@
       margin-bottom: 0;
       text-align: left;
     }
+
     .metric-title {
       font-size: 1.05rem;
       color: #888;
       margin-bottom: 8px;
       text-align: left;
     }
+
     .metric-value {
       font-size: 1.5rem;
       font-weight: bold;
       color: #222;
       text-align: left;
     }
+
     .metric-subtitle {
       color: #888;
       font-size: 0.95rem;
       margin-top: 4px;
       text-align: left;
     }
+
     .metric-card-span2 {
       grid-column: span 2;
     }
+
+    /* responsive */
+    @media (max-width: 1100px) {
+      .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .dashboard-background { margin: 12px; padding: 18px; }
+      .dashboard-carousel { padding: 14px; }
+      .dashboard-health-score,
+      .dashboard-tasks { min-width: 0; }
+      #gauge { width: 100% !important; max-width: 420px; }
+    }
+    @media (max-width: 520px) {
+      .metrics-row { grid-template-columns: 1fr; }
+      .metric-card-span2 { grid-column: auto; }
+    }
   </style>
 </head>
+
 <body>
   <div class="dashboard-background">
     <div class="dashboard-carousel">
+
       <div class="dashboard-row">
         <div class="dashboard-health-score">
           <h3 style="text-align:center;font-size:1.3rem;font-weight:600;color:#222;margin-bottom:24px;">Health Score</h3>
           <div id="gauge" style="width:400px;height:340px;"></div>
+
           <div class="health-score-label">
             <div class="score-change">21% increase over last month</div>
             <div class="score-status good">Good</div>
           </div>
         </div>
+
         <div class="dashboard-tasks">
           <h3 style="text-align:left;font-size:1.3rem;font-weight:600;color:#222;margin-bottom:24px;">Tasks Due</h3>
           <div class="tasks-list">
@@ -172,20 +215,22 @@
               <div>
                 <strong>Client Profitability Analysis</strong>
                 <div>Analyze the LTV:CAC ratio (4.5:1) across different client segments to identify the most profitable service offerings. Adjust marketing spend if acquisition costs rise above $2,400 per client.</div>
-                <div class="task-details">Quarterly Review (Next: Dec 15) &bull; Business Development Team</div>
+                <div class="task-details">Quarterly Review (Next: Dec 15) • Business Development Team</div>
               </div>
             </div>
+
             <div class="task-item">
               <input type="checkbox" class="task-checkbox" />
               <div>
                 <strong>Outstanding Invoices Collection Strategy</strong>
                 <div>Reduce $725,000 in total invoices owed by implementing a new collection strategy. Prioritize invoices over 90 days overdue and set up automated payment reminders for late clients.</div>
-                <div class="task-details">Ongoing (Weekly review every Friday) &bull; Accounts Receivable Team</div>
+                <div class="task-details">Ongoing (Weekly review every Friday) • Accounts Receivable Team</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="dashboard-metrics">
         <div class="metrics-row">
           <div class="metric-card">
@@ -209,6 +254,7 @@
             <div class="metric-subtitle">12% more than last week</div>
           </div>
         </div>
+
         <div class="metrics-row">
           <div class="metric-card">
             <div class="metric-title">New Clients Acquired This Year</div>
@@ -231,6 +277,7 @@
             <div class="metric-subtitle">2% more than last month</div>
           </div>
         </div>
+
         <div class="metrics-row">
           <div class="metric-card">
             <div class="metric-title">LTV:CAC Ratio</div>
@@ -249,41 +296,53 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
+
   <script>
-    var gauge = echarts.init(document.getElementById('gauge'));
-    var option = {
-      series: [{
-        type: 'gauge',
-        startAngle: 180,
-        endAngle: 0,
-        min: 0,
-        max: 100,
-        axisLine: {
-          lineStyle: {
-            width: 32,
-            color: [
-              [0.7, '#228B22'],
-              [1, '#eee']
-            ]
-          }
-        },
-        splitLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { show: false },
-        pointer: { show: false },
-        detail: {
-          valueAnimation: true,
-          fontSize: 48,
-          offsetCenter: [0, '20%'],
-          color: '#444',
-          formatter: '{value}'
-        },
-        data: [{ value: 61 }]
-      }]
-    };
-    gauge.setOption(option);
+    document.addEventListener('DOMContentLoaded', () => {
+      const gaugeEl = document.getElementById('gauge');
+      const gauge = echarts.init(gaugeEl);
+
+      const option = {
+        series: [{
+          type: 'gauge',
+          startAngle: 180,
+          endAngle: 0,
+          min: 0,
+          max: 100,
+          axisLine: {
+            lineStyle: {
+              width: 32,
+              color: [
+                [0.7, '#228B22'],
+                [1, '#eee']
+              ]
+            }
+          },
+          splitLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: { show: false },
+          pointer: { show: false },
+          detail: {
+            valueAnimation: true,
+            fontSize: 48,
+            offsetCenter: [0, '20%'],
+            color: '#444',
+            formatter: '{value}'
+          },
+          data: [{ value: 61 }]
+        }]
+      };
+
+      gauge.setOption(option);
+
+      // Resize support (nice inside iframes/modals)
+      const resizeGauge = () => gauge.resize();
+      window.addEventListener('resize', resizeGauge);
+      setTimeout(resizeGauge, 50);
+    });
   </script>
 </body>
 </html>
