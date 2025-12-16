@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Burn Rate Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div class="dashboard-background">
+    <div class="dashboard-carousel">
+      <h2>Burn Rate KPIs</h2>
+      <div class="dashboard-metrics">
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-title">Current ARR</div>
+            <div class="metric-value">$5,000,000</div>
+            <div class="metric-subtitle">Annual Recurring Revenue</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Monthly Burn Rate</div>
+            <div class="metric-value">$320,000</div>
+            <div class="metric-subtitle">Last month</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Runway Remaining</div>
+            <div class="metric-value">15.6 months</div>
+            <div class="metric-subtitle">Based on current cash</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Cash on Hand</div>
+            <div class="metric-value">$5,000,000</div>
+            <div class="metric-subtitle">As of Nov 2025</div>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-title">Gross Margin</div>
+            <div class="metric-value">68%</div>
+            <div class="metric-subtitle">Year to date</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Operating Expenses</div>
+            <div class="metric-value">$220,000</div>
+            <div class="metric-subtitle">Last month</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Net Income</div>
+            <div class="metric-value">$30,000</div>
+            <div class="metric-subtitle">Last month</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">EBITDA</div>
+            <div class="metric-value">$40,000</div>
+            <div class="metric-subtitle">Last month</div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-section">
+        <h3>Burn Rate Trend</h3>
+        <div id="burnRateTrendChart" style="height:320px;width:100%;"></div>
+      </div>
+      <div class="dashboard-section">
+        <h3>Runway Projection (Next 12 Months)</h3>
+        <div id="runwayProjectionChart" style="height:320px;width:100%;"></div>
+      </div>
+      <div class="dashboard-section">
+        <h3>Expense Breakdown</h3>
+        <div id="expenseBreakdownChart" style="height:320px;width:100%;"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Burn Rate Trend
+    var burnRateTrendChart = echarts.init(document.getElementById('burnRateTrendChart'));
+    burnRateTrendChart.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: { data: ['Burn Rate', 'Net Income'] },
+      xAxis: { type: 'category', data: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'] },
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Burn Rate',
+          min: 300000,
+          max: 330000,
+          interval: 5000,
+          axisLabel: { formatter: '${value}' }
+        },
+        {
+          type: 'value',
+          name: 'Net Income',
+          min: 25000,
+          max: 40000,
+          interval: 5000,
+          axisLabel: { formatter: '${value}' }
+        }
+      ],
+      series: [
+        {
+          name: 'Burn Rate',
+          type: 'line',
+          data: [310000, 315000, 320000, 325000, 318000, 320000],
+          yAxisIndex: 0,
+          smooth: true,
+          lineStyle: { color: '#e67e22' }
+        },
+        {
+          name: 'Net Income',
+          type: 'line',
+          data: [25000, 30000, 35000, 40000, 32000, 30000],
+          yAxisIndex: 1,
+          smooth: true,
+          lineStyle: { color: '#228B22' }
+        }
+      ]
+    });
+    // Runway Projection
+    var runwayProjectionChart = echarts.init(document.getElementById('runwayProjectionChart'));
+    runwayProjectionChart.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: { data: ['Cash on Hand', 'Projected Burn'] },
+      xAxis: { type: 'category', data: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'] },
+      yAxis: { type: 'value', min: 0, max: 5000000, axisLabel: { formatter: '${value}' } },
+      series: [
+        {
+          name: 'Cash on Hand',
+          type: 'line',
+          data: [5000000, 4680000, 4360000, 4040000, 3720000, 3400000, 3080000, 2760000, 2440000, 2120000, 1800000, 1480000],
+          smooth: true,
+          lineStyle: { color: '#228B22' }
+        },
+        {
+          name: 'Projected Burn',
+          type: 'bar',
+          data: [320000, 320000, 320000, 320000, 320000, 320000, 320000, 320000, 320000, 320000, 320000, 320000],
+          itemStyle: { color: '#e67e22' },
+          barWidth: '40%'
+        }
+      ]
+    });
+    // Expense Breakdown
+    var expenseData = [
+      { value: 120000, name: 'Salaries' },
+      { value: 40000, name: 'Rent' },
+      { value: 30000, name: 'Marketing' },
+      { value: 20000, name: 'Tech/Cloud' },
+      { value: 10000, name: 'Other' }
+    ];
+    var baseColor = [120, 90, 200];
+    function getColor(intensity) {
+      var r = baseColor[0], g = baseColor[1], b = baseColor[2];
+      var alpha = 0.7 + 0.3 * intensity;
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+    var maxValue = Math.max.apply(null, expenseData.map(function(d) { return d.value; }));
+    var pieColors = expenseData.map(function(d) { return getColor(d.value / maxValue); });
+    var expenseBreakdownChart = echarts.init(document.getElementById('expenseBreakdownChart'));
+    expenseBreakdownChart.setOption({
+      tooltip: { trigger: 'item' },
+      legend: {
+        orient: 'vertical',
+        right: 20,
+        top: 20,
+        textStyle: { fontSize: 14, color: '#888', fontWeight: 500 }
+      },
+      series: [
+        {
+          name: 'Expenses',
+          type: 'pie',
+          radius: '60%',
+          avoidLabelOverlap: false,
+          data: expenseData,
+          label: {
+            show: true,
+            formatter: function(params) {
+              var value = params.value;
+              var formatted = '$' + value.toLocaleString();
+              return params.name + ': ' + formatted + ' (' + params.percent + '%)';
+            },
+            fontSize: 13,
+            color: '#444',
+            fontWeight: 500
+          },
+          labelLine: {
+            length: 18,
+            length2: 12,
+            smooth: true
+          },
+          itemStyle: {
+            color: function(params) {
+              return pieColors[params.dataIndex];
+            },
+            borderRadius: 8,
+            borderColor: '#fff',
+            borderWidth: 2
+          }
+        }
+      ]
+    });
+  </script>
+</body>
+</html>
