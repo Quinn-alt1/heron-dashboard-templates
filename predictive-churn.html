@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predictive Churn Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <!-- ECharts CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div class="dashboard-background">
+    <div class="dashboard-carousel">
+      <h2>Predictive Churn KPIs</h2>
+      <div class="dashboard-metrics">
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-title">Current ARR</div>
+            <div class="metric-value">$5,000,000</div>
+            <div class="metric-subtitle">Annual Recurring Revenue</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Churn Rate</div>
+            <div class="metric-value">3.2%</div>
+            <div class="metric-subtitle">Last 30 days</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Net Revenue Retention</div>
+            <div class="metric-value">112%</div>
+            <div class="metric-subtitle">Year to date</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Customers at Risk</div>
+            <div class="metric-value">42</div>
+            <div class="metric-subtitle">Predicted to churn next month</div>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-title">Expansion Revenue</div>
+            <div class="metric-value">$250,000</div>
+            <div class="metric-subtitle">Last quarter</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Contraction Revenue</div>
+            <div class="metric-value">$50,000</div>
+            <div class="metric-subtitle">Last quarter</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">New Customers</div>
+            <div class="metric-value">18</div>
+            <div class="metric-subtitle">Last month</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Lost Customers</div>
+            <div class="metric-value">6</div>
+            <div class="metric-subtitle">Last month</div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-section">
+        <h3>ARR & Churn Trend</h3>
+        <div id="arrChurnChart" style="height:320px;width:100%;"></div>
+      </div>
+      <div class="dashboard-section">
+        <h3>Current ARR vs Predicted Churn ARR (Next 6 Months)</h3>
+        <div id="arrVsChurnChart" style="height:320px;width:100%;"></div>
+      </div>
+      <div class="dashboard-section">
+        <h3>At-Risk ARR by Renewal Window</h3>
+        <div id="atRiskArrRenewalChart" style="height:320px;width:100%;"></div>
+      </div>
+      <div class="dashboard-section">
+        <h3>Customers at Risk</h3>
+        <table class="risk-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>MRR</th>
+              <th>Health</th>
+              <th>Last Activity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Acme Corp</td>
+              <td>$2,000</td>
+              <td>Low</td>
+              <td>2025-11-10</td>
+            </tr>
+            <tr>
+              <td>Beta LLC</td>
+              <td>$1,500</td>
+              <td>Medium</td>
+              <td>2025-11-15</td>
+            </tr>
+            <tr>
+              <td>Gamma Inc</td>
+              <td>$1,200</td>
+              <td>Low</td>
+              <td>2025-11-05</td>
+            </tr>
+            <tr>
+              <td>Delta Ltd</td>
+              <td>$900</td>
+              <td>Low</td>
+              <td>2025-11-01</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    // ARR & Churn Trend
+    var arrChurnChart = echarts.init(document.getElementById('arrChurnChart'));
+    arrChurnChart.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: { data: ['ARR', 'Churn Rate'] },
+      xAxis: { type: 'category', data: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'] },
+      yAxis: [
+        { type: 'value', name: 'ARR', min: 4000000, max: 5200000, axisLabel: { formatter: '${value}' } },
+        { type: 'value', name: 'Churn Rate', min: 2, max: 4, axisLabel: { formatter: '{value}%' } }
+      ],
+      series: [
+        {
+          name: 'ARR',
+          type: 'line',
+          data: [4800000, 4900000, 4950000, 5000000, 5050000, 5000000],
+          yAxisIndex: 0,
+          smooth: true,
+          lineStyle: { color: '#228B22' }
+        },
+        {
+          name: 'Churn Rate',
+          type: 'line',
+          data: [3.8, 3.5, 3.3, 3.2, 3.1, 3.2],
+          yAxisIndex: 1,
+          smooth: true,
+          lineStyle: { color: '#e67e22' }
+        }
+      ]
+    });
+    // Current ARR vs Predicted Churn ARR (Next 6 Months)
+    var arrVsChurnChart = echarts.init(document.getElementById('arrVsChurnChart'));
+    arrVsChurnChart.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: { data: ['Current ARR', 'Predicted Churn ARR'] },
+      xAxis: { type: 'category', data: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'] },
+      yAxis: { type: 'value', min: 4700000, max: 5100000, axisLabel: { formatter: '${value}' } },
+      series: [
+        {
+          name: 'Current ARR',
+          type: 'line',
+          data: [5000000, 5000000, 5000000, 5000000, 5000000, 5000000],
+          smooth: true,
+          lineStyle: { color: '#228B22' }
+        },
+        {
+          name: 'Predicted Churn ARR',
+          type: 'line',
+          data: [4984000, 4968000, 4952000, 4936000, 4920000, 4904000],
+          smooth: true,
+          lineStyle: { color: '#e74c3c' }
+        }
+      ]
+    });
+    // At-Risk ARR by Renewal Window
+    var atRiskArrRenewalChart = echarts.init(document.getElementById('atRiskArrRenewalChart'));
+    atRiskArrRenewalChart.setOption({
+      tooltip: { trigger: 'axis' },
+      xAxis: {
+        type: 'category',
+        data: ['0-30 days', '31-60 days', '61-90 days', '91-180 days', '181+ days']
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { formatter: '${value}' }
+      },
+      series: [
+        {
+          name: 'At-Risk ARR',
+          type: 'bar',
+          data: [120000, 80000, 50000, 30000, 20000],
+          itemStyle: {
+            color: '#e67e22'
+          },
+          barWidth: '40%'
+        }
+      ]
+    });
+  </script>
+</body>
+</html>
